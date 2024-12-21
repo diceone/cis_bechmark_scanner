@@ -8,7 +8,7 @@ A comprehensive security compliance scanner for Linux systems, implementing CIS 
   - RHEL 8 (Complete CIS Level 1 Implementation)
   - RHEL 9 (Complete CIS Level 1 Implementation + Enterprise Features)
   - SLES 15
-  - Ubuntu (planned)
+  - Ubuntu 22.04 LTS (Complete CIS Level 1 Implementation)
 
 - **Security Checks**:
   - Initial System Settings
@@ -27,6 +27,14 @@ A comprehensive security compliance scanner for Linux systems, implementing CIS 
   - USBGuard Security
   - Enterprise Authentication
 
+- **Ubuntu 22.04 Features**:
+  - AppArmor Profiles
+  - Snap Security
+  - UFW Configuration
+  - Systemd-journald
+  - Time Synchronization
+  - Package Verification
+
 ## Installation
 
 ```bash
@@ -41,6 +49,7 @@ cis_benchmark_scanner scan
 
 # Run checks for specific OS
 cis_benchmark_scanner scan --os rhel9
+cis_benchmark_scanner scan --os ubuntu2204
 
 # Run specific check by ID
 cis_benchmark_scanner scan --check 1.1.1
@@ -106,6 +115,26 @@ cis_benchmark_scanner scan --report
 - FIPS 140-3 Compliance
 - USBGuard Protection
 - Enterprise Authentication
+
+### Ubuntu 22.04 Features
+
+#### Access Control
+- AppArmor Profiles
+- Snap Package Security
+- Service Hardening
+- SSH Configuration
+
+#### System Security
+- UFW Firewall Rules
+- Systemd Services
+- Time Synchronization
+- Package Verification
+
+#### Auditing & Logging
+- Audit Rules
+- Journald Settings
+- Log Forwarding
+- File Integrity
 
 ## Security Checks Implementation
 

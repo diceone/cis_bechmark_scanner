@@ -68,6 +68,21 @@
   command: "grep '^GRUB2_PASSWORD' /boot/grub2/user.cfg"
   expected: "GRUB2_PASSWORD"
 
+- id: "1.4.2"
+  description: "Ensure bootloader password is set"
+  command: "grep \"^GRUB2_PASSWORD\" /boot/grub2/user.cfg"
+  expected: "GRUB2_PASSWORD="
+
+- id: "1.4.3"
+  description: "Ensure authentication required for single user mode"
+  command: "grep /sbin/sulogin /usr/lib/systemd/system/rescue.service"
+  expected: "ExecStart=-/bin/sh -c \"/sbin/sulogin; /usr/bin/systemctl --fail --no-block default\""
+
+- id: "1.4.4"
+  description: "Ensure boot loader ownership is configured"
+  command: "stat -L -c \"%u %g\" /boot/grub2/grub.cfg"
+  expected: "0 0"
+
 - id: "1.5.1"
   description: "Ensure core dumps are restricted"
   command: "grep -E '^\\s*\\*\\s+hard\\s+core' /etc/security/limits.conf /etc/security/limits.d/*"
@@ -197,6 +212,26 @@
   description: "Ensure /etc/hosts.allow is configured"
   command: "stat -L -c '%a %u %g' /etc/hosts.allow"
   expected: "644 0 0"
+
+- id: "3.5.1"
+  description: "Ensure wireless interfaces are disabled"
+  command: "nmcli radio all"
+  expected: "WIFI-HW disabled"
+
+- id: "3.5.2"
+  description: "Ensure IPv6 is disabled if not needed"
+  command: "grep -E \"^GRUB_CMDLINE_LINUX.*ipv6.disable=1\" /etc/default/grub"
+  expected: "ipv6.disable=1"
+
+- id: "3.5.3"
+  description: "Ensure firewall is configured"
+  command: "firewall-cmd --state"
+  expected: "running"
+
+- id: "3.5.4"
+  description: "Ensure default firewall zone is set"
+  command: "firewall-cmd --get-default-zone"
+  expected: "public"
 
 - id: "4.1.1.1"
   description: "Ensure auditd is installed"
@@ -383,6 +418,26 @@
   command: "stat -L -c '%a %u %g' /etc/gshadow-"
   expected: "000 0 0"
 
+- id: "6.1.13"
+  description: "Ensure no duplicate UIDs exist"
+  command: "cut -d: -f3 /etc/passwd | sort | uniq -d"
+  expected: ""
+
+- id: "6.1.14"
+  description: "Ensure no duplicate GIDs exist"
+  command: "cut -d: -f3 /etc/group | sort | uniq -d"
+  expected: ""
+
+- id: "6.1.15"
+  description: "Ensure no duplicate user names exist"
+  command: "cut -d: -f1 /etc/passwd | sort | uniq -d"
+  expected: ""
+
+- id: "6.1.16"
+  description: "Ensure no duplicate group names exist"
+  command: "cut -d: -f1 /etc/group | sort | uniq -d"
+  expected: ""
+
 - id: "6.2.1"
   description: "Ensure password fields are not empty"
   command: "awk -F: '($2 == \"\" ) { print $1 \" does not have a password \"}' /etc/shadow"
@@ -456,6 +511,36 @@
 - id: "6.2.14"
   description: "Ensure no users have .rhosts files"
   command: "awk -F: '($1!~/(halt|sync|shutdown|nfsnobody)/ && $7!~/^(\/usr)?\/sbin\/nologin(\/)?$/ && $7!~/(\/usr)?\/bin\/false(\/)?$/) { print $1 \" \" $6 }' /etc/passwd | while read -r user dir; do if [ -d \"$dir\" ]; then if [ -f \"$dir/.rhosts\" ]; then echo \"$user has .rhosts file\"; fi; fi; done"
+  expected: ""
+
+- id: "6.2.15"
+  description: "Ensure all groups in /etc/passwd exist in /etc/group"
+  command: "for i in $(cut -s -d: -f4 /etc/passwd | sort -u); do grep -q -P \"^.*?:[^:]*:$i:\" /etc/group; if [ $? -ne 0 ]; then echo \"Group $i is referenced by /etc/passwd but does not exist in /etc/group\"; fi; done"
+  expected: ""
+
+- id: "6.2.16"
+  description: "Ensure shadow group is empty"
+  command: "grep ^shadow:[^:]*:[^:]*:[^:]+ /etc/group"
+  expected: ""
+
+- id: "6.2.17"
+  description: "Ensure all users' home directories exist"
+  command: "cat /etc/passwd | awk -F: '{ print $1 \" \" $6 }' | while read user dir; do if [ ! -d \"$dir\" ]; then echo \"The home directory ($dir) of user $user does not exist.\"; fi; done"
+  expected: ""
+
+- id: "6.2.18"
+  description: "Ensure users' home directories permissions are 750 or more restrictive"
+  command: "for dir in `cat /etc/passwd | egrep -v '(root|halt|sync|shutdown)' | awk -F: '($7 != \"/sbin/nologin\") { print $6 }'`; do dirperm=`ls -ld $dir | cut -f1 -d\" \"`; if [ `echo $dirperm | cut -c6` != \"-\" ]; then echo \"Group Write permission set on directory $dir\"; fi; if [ `echo $dirperm | cut -c8` != \"-\" ]; then echo \"Other Read permission set on directory $dir\"; fi; if [ `echo $dirperm | cut -c9` != \"-\" ]; then echo \"Other Write permission set on directory $dir\"; fi; if [ `echo $dirperm | cut -c10` != \"-\" ]; then echo \"Other Execute permission set on directory $dir\"; fi; done"
+  expected: ""
+
+- id: "6.2.19"
+  description: "Ensure users own their home directories"
+  command: "cat /etc/passwd | awk -F: '{ print $1 \" \" $6 }' | while read user dir; do if [ ! -d \"$dir\" ]; then echo \"The home directory ($dir) of user $user does not exist.\"; else owner=`stat -L -c \"%U\" \"$dir\"`; if [ \"$owner\" != \"$user\" ]; then echo \"The home directory ($dir) of user $user is owned by $owner.\"; fi; fi; done"
+  expected: ""
+
+- id: "6.2.20"
+  description: "Ensure users' dot files are not group or world writable"
+  command: "for dir in `cat /etc/passwd | egrep -v '(root|halt|sync|shutdown)' | awk -F: '($7 != \"/sbin/nologin\") { print $6 }'`; do for file in $dir/.[A-Za-z0-9]*; do if [ ! -h \"$file\" -a -f \"$file\" ]; then fileperm=`ls -ld $file | cut -f1 -d\" \"`; if [ `echo $fileperm | cut -c6` != \"-\" ]; then echo \"Group Write permission set on file $file\"; fi; if [ `echo $fileperm | cut -c9` != \"-\" ]; then echo \"Other Write permission set on file $file\"; fi; fi; done; done"
   expected: ""
 
 - id: "7.1.1"

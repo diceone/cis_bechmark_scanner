@@ -6,7 +6,7 @@ A comprehensive security compliance scanner for Linux systems, implementing CIS 
 
 - **Multiple Distribution Support**:
   - RHEL 8 (Complete CIS Level 1 Implementation)
-  - RHEL 9
+  - RHEL 9 (Complete CIS Level 1 Implementation + Enterprise Features)
   - SLES 15
   - Ubuntu (planned)
 
@@ -19,15 +19,13 @@ A comprehensive security compliance scanner for Linux systems, implementing CIS 
   - System Maintenance
   - User and Group Settings
 
-- **Comprehensive Coverage**:
-  - File System Configuration
-  - Boot Settings
-  - Process Accounting
-  - User Environment
-  - Password Policies
-  - Network Parameters
-  - Audit Rules
-  - Time Synchronization
+- **Enterprise Features** (RHEL 9):
+  - TPM2 and Secure Boot
+  - LUKS2 Encryption
+  - FIPS 140-3 Compliance
+  - SELinux Controls
+  - USBGuard Security
+  - Enterprise Authentication
 
 ## Installation
 
@@ -42,10 +40,13 @@ go install github.com/diceone/cis_benchmark_scanner@latest
 cis_benchmark_scanner scan
 
 # Run checks for specific OS
-cis_benchmark_scanner scan --os rhel8
+cis_benchmark_scanner scan --os rhel9
 
 # Run specific check by ID
 cis_benchmark_scanner scan --check 1.1.1
+
+# Generate HTML report
+cis_benchmark_scanner scan --report
 ```
 
 ## Check Categories
@@ -88,13 +89,23 @@ cis_benchmark_scanner scan --check 1.1.1
 - Root Login Controls
 - Default umask Configuration
 
-## Contributing
+### RHEL 9 Enterprise Features
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+#### Hardware Security
+- TPM2 Device Management
+- Secure Boot Configuration
+- IMA Policy Settings
+
+#### Disk Encryption
+- LUKS2 with TPM2
+- Automated Decryption
+- Strong Cipher Settings
+
+#### System Security
+- SELinux Enforcing Mode
+- FIPS 140-3 Compliance
+- USBGuard Protection
+- Enterprise Authentication
 
 ## Security Checks Implementation
 
@@ -111,6 +122,38 @@ Example:
   description: "Ensure mounting of cramfs filesystems is disabled"
   command: "modprobe -n -v cramfs"
   expected: "install /bin/true"
+```
+
+## HTML Reports
+
+The scanner generates detailed reports including:
+- Overall compliance status
+- Individual check results
+- Remediation suggestions
+- System information
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## Development
+
+### Requirements
+- Go 1.21 or later
+- YAML knowledge for check definitions
+- Linux system for testing
+
+### Testing
+```bash
+# Run unit tests
+go test ./...
+
+# Run integration tests
+go test -tags=integration ./...
 ```
 
 ## License

@@ -442,3 +442,198 @@
   description: "Ensure AIDE uses SHA512 for hashing"
   command: "grep '^Checksums' /etc/aide/aide.conf | grep 'sha512'"
   expected: "sha512"
+
+- id: "21.1.1"
+  description: "Ensure system-wide core dumps are restricted"
+  command: "grep -E '^\\s*\\*\\s+hard\\s+core' /etc/security/limits.conf /etc/security/limits.d/*"
+  expected: "* hard core 0"
+
+- id: "21.1.2"
+  description: "Ensure XD/NX support is enabled"
+  command: "journalctl | grep 'protection: active'"
+  expected: "NX (Execute Disable) protection: active"
+
+- id: "21.1.3"
+  description: "Ensure address space layout randomization (ASLR) is enabled"
+  command: "sysctl kernel.randomize_va_space"
+  expected: "kernel.randomize_va_space = 2"
+
+- id: "21.2.1"
+  description: "Ensure SELinux or AppArmor are installed"
+  command: "dpkg -s apparmor selinux-basics"
+  expected: "Status: install ok installed"
+
+- id: "21.2.2"
+  description: "Ensure SELinux or AppArmor are enabled in the bootloader configuration"
+  command: "grep \"^GRUB_CMDLINE_LINUX=\" /etc/default/grub"
+  expected: "security=apparmor"
+
+- id: "21.3.1"
+  description: "Ensure CUPS is not enabled"
+  command: "systemctl is-enabled cups"
+  expected: "disabled"
+
+- id: "21.3.2"
+  description: "Ensure DHCP Server is not enabled"
+  command: "systemctl is-enabled isc-dhcp-server"
+  expected: "disabled"
+
+- id: "21.3.3"
+  description: "Ensure LDAP server is not enabled"
+  command: "systemctl is-enabled slapd"
+  expected: "disabled"
+
+- id: "21.4.1"
+  description: "Ensure permissions on /etc/ssh/sshd_config are configured"
+  command: "stat -L -c \"%a %u %g\" /etc/ssh/sshd_config"
+  expected: "600 0 0"
+
+- id: "21.4.2"
+  description: "Ensure SSH Protocol is set to 2"
+  command: "grep -Ei '^Protocol' /etc/ssh/sshd_config"
+  expected: "Protocol 2"
+
+- id: "21.4.3"
+  description: "Ensure SSH LogLevel is appropriate"
+  command: "grep -Ei '^LogLevel' /etc/ssh/sshd_config"
+  expected: "LogLevel VERBOSE"
+
+- id: "21.5.1"
+  description: "Ensure cron daemon is enabled and running"
+  command: "systemctl is-enabled cron"
+  expected: "enabled"
+
+- id: "21.5.2"
+  description: "Ensure permissions on /etc/crontab are configured"
+  command: "stat -L -c \"%a %u %g\" /etc/crontab"
+  expected: "600 0 0"
+
+- id: "21.6.1"
+  description: "Ensure manifest permissions are configured"
+  command: "stat -L -c \"%a %u %g\" /etc/apt/sources.list"
+  expected: "644 0 0"
+
+- id: "21.6.2"
+  description: "Ensure GPG keys are configured"
+  command: "apt-key list"
+  expected: "pub"
+
+- id: "21.7.1"
+  description: "Ensure password creation requirements are configured"
+  command: "grep -E '^minlen|^dcredit|^ucredit|^ocredit|^lcredit' /etc/security/pwquality.conf"
+  expected: "minlen = 14"
+
+- id: "21.7.2"
+  description: "Ensure lockout for failed password attempts is configured"
+  command: "grep -E '^\s*auth\s+required\s+pam_tally2.so' /etc/pam.d/common-auth"
+  expected: "auth required pam_tally2.so"
+
+- id: "21.8.1"
+  description: "Ensure password expiration is 365 days or less"
+  command: "grep -E '^PASS_MAX_DAYS' /etc/login.defs"
+  expected: "PASS_MAX_DAYS 365"
+
+- id: "21.8.2"
+  description: "Ensure minimum days between password changes is configured"
+  command: "grep -E '^PASS_MIN_DAYS' /etc/login.defs"
+  expected: "PASS_MIN_DAYS 7"
+
+- id: "21.9.1"
+  description: "Ensure sudo is installed"
+  command: "dpkg -s sudo"
+  expected: "Status: install ok installed"
+
+- id: "21.9.2"
+  description: "Ensure sudo commands use pty"
+  command: "grep -Ei '^\s*Defaults\s+([^#]+,\s*)?use_pty' /etc/sudoers"
+  expected: "Defaults use_pty"
+
+- id: "21.10.1"
+  description: "Ensure permissions on /etc/passwd are configured"
+  command: "stat -L -c \"%a %u %g\" /etc/passwd"
+  expected: "644 0 0"
+
+- id: "21.10.2"
+  description: "Ensure permissions on /etc/shadow are configured"
+  command: "stat -L -c \"%a %u %g\" /etc/shadow"
+  expected: "640 0 42"
+
+- id: "21.11.1"
+  description: "Ensure no world writable files exist"
+  command: "df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type f -perm -0002"
+  expected: ""
+
+- id: "21.12.1"
+  description: "Ensure IPv6 router advertisements are not accepted"
+  command: "sysctl net.ipv6.conf.all.accept_ra"
+  expected: "net.ipv6.conf.all.accept_ra = 0"
+
+- id: "21.12.2"
+  description: "Ensure IPv6 redirects are not accepted"
+  command: "sysctl net.ipv6.conf.all.accept_redirects"
+  expected: "net.ipv6.conf.all.accept_redirects = 0"
+
+- id: "21.13.1"
+  description: "Ensure auditd is installed and enabled"
+  command: "dpkg -s auditd && systemctl is-enabled auditd"
+  expected: "enabled"
+
+- id: "21.13.2"
+  description: "Ensure audit log storage size is configured"
+  command: "grep -E '^max_log_file\s*=' /etc/audit/auditd.conf"
+  expected: "max_log_file = 8"
+
+- id: "21.14.1"
+  description: "Ensure rsyslog is installed and enabled"
+  command: "dpkg -s rsyslog && systemctl is-enabled rsyslog"
+  expected: "enabled"
+
+- id: "21.14.2"
+  description: "Ensure rsyslog default file permissions are configured"
+  command: "grep -E '^\s*\$FileCreateMode' /etc/rsyslog.conf"
+  expected: "$FileCreateMode 0640"
+
+- id: "21.15.1"
+  description: "Ensure systemd-journal-remote is configured"
+  command: "systemctl is-enabled systemd-journal-remote"
+  expected: "enabled"
+
+- id: "21.15.2"
+  description: "Ensure systemd-journal-remote certificate validation is enabled"
+  command: "grep -E '^\s*SSLVerifyClient' /etc/systemd/journal-upload.conf"
+  expected: "SSLVerifyClient=yes"
+
+- id: "21.16.1"
+  description: "Ensure time synchronization is in use"
+  command: "systemctl is-enabled systemd-timesyncd"
+  expected: "enabled"
+
+- id: "21.16.2"
+  description: "Ensure ntp is configured"
+  command: "grep -E '^(server|pool)' /etc/ntp.conf"
+  expected: "pool"
+
+- id: "21.17.1"
+  description: "Ensure mail transfer agent is configured for local-only mode"
+  command: "ss -lntu | grep -E ':25\\s' | grep -E -v '\\s127\\.0\\.0\\.1:25\\s'"
+  expected: ""
+
+- id: "21.18.1"
+  description: "Ensure Uncomplicated Firewall is installed"
+  command: "dpkg -s ufw"
+  expected: "Status: install ok installed"
+
+- id: "21.18.2"
+  description: "Ensure iptables-persistent is not installed"
+  command: "dpkg -s iptables-persistent"
+  expected: "package 'iptables-persistent' is not installed"
+
+- id: "21.19.1"
+  description: "Ensure wireless interfaces are disabled"
+  command: "nmcli radio all"
+  expected: "disabled"
+
+- id: "21.20.1"
+  description: "Ensure system administrator actions (sudolog) are collected"
+  command: "grep -E '^-w\s+/var/log/sudo.log\s+-p\s+wa\s+-k\s+actions' /etc/audit/rules.d/*.rules"
+  expected: "-w /var/log/sudo.log -p wa -k actions"

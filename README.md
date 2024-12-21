@@ -15,7 +15,7 @@ A powerful command-line tool for scanning systems against CIS (Center for Intern
 
 ### Using Pre-built Binaries
 
-Download the latest release from the [releases page](https://github.com/mvogeler/cis_benchmark_scanner/releases).
+Download the latest release from the [releases page](https://github.com/diceone/cis_benchmark_scanner/releases).
 
 For RPM-based systems:
 ```bash
@@ -32,7 +32,7 @@ sudo dpkg -i cis_benchmark_scanner_*.deb
 1. Ensure Go 1.21 or later is installed
 2. Clone the repository:
 ```bash
-git clone https://github.com/mvogeler/cis_benchmark_scanner.git
+git clone https://github.com/diceone/cis_benchmark_scanner.git
 cd cis_benchmark_scanner
 ```
 
@@ -166,10 +166,6 @@ The scanner generates detailed HTML reports including:
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Security
-
-For security issues, please email security@example.com or create a GitHub security advisory.
 
 ## Acknowledgments
 

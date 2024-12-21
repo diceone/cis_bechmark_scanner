@@ -1,0 +1,204 @@
+- id: "1.1.1.1"
+  description: "Ensure mounting of cramfs filesystems is disabled"
+  command: "modprobe -n -v cramfs"
+  expected: "install /bin/true"
+
+- id: "1.1.1.2"
+  description: "Ensure mounting of freevxfs filesystems is disabled"
+  command: "modprobe -n -v freevxfs"
+  expected: "install /bin/true"
+
+- id: "1.1.2.1"
+  description: "Ensure /tmp is configured on separate partition with appropriate options"
+  command: "findmnt -n /tmp | grep -E '\\bnodev,nosuid,noexec\\b'"
+  expected: "nodev,nosuid,noexec"
+
+- id: "1.2.1"
+  description: "Ensure APT repositories are configured correctly"
+  command: "grep -r '^deb ' /etc/apt/sources.list /etc/apt/sources.list.d/"
+  expected: "deb"
+
+- id: "1.2.2"
+  description: "Ensure GPG keys are configured"
+  command: "apt-key list"
+  expected: "Ubuntu Archive Automatic Signing Key"
+
+- id: "1.3.1"
+  description: "Ensure AIDE is installed"
+  command: "dpkg -s aide"
+  expected: "Status: install ok installed"
+
+- id: "1.3.2"
+  description: "Ensure AIDE is configured to use SHA512"
+  command: "grep 'sha512' /etc/aide/aide.conf"
+  expected: "sha512"
+
+- id: "1.4.1"
+  description: "Ensure bootloader password is set"
+  command: "grep \"^set superusers\" /boot/grub/grub.cfg"
+  expected: "set superusers"
+
+- id: "1.5.1"
+  description: "Ensure AppArmor is installed"
+  command: "dpkg -s apparmor"
+  expected: "Status: install ok installed"
+
+- id: "1.5.2"
+  description: "Ensure AppArmor is enabled in the bootloader configuration"
+  command: "grep \"^GRUB_CMDLINE_LINUX=\" /etc/default/grub"
+  expected: "apparmor=1"
+
+- id: "2.1.1"
+  description: "Ensure systemd-resolved is enabled and configured"
+  command: "systemctl is-enabled systemd-resolved"
+  expected: "enabled"
+
+- id: "2.1.2"
+  description: "Ensure systemd-resolved uses DNS-over-TLS"
+  command: "grep -E '^DNSOverTLS=yes' /etc/systemd/resolved.conf"
+  expected: "DNSOverTLS=yes"
+
+- id: "2.2.1"
+  description: "Ensure chrony is installed and configured"
+  command: "dpkg -s chrony"
+  expected: "Status: install ok installed"
+
+- id: "2.2.2"
+  description: "Ensure chrony uses authenticated NTP"
+  command: "grep -E '^pool.*key' /etc/chrony/chrony.conf"
+  expected: "key"
+
+- id: "3.1.1"
+  description: "Ensure nftables is installed"
+  command: "dpkg -s nftables"
+  expected: "Status: install ok installed"
+
+- id: "3.1.2"
+  description: "Ensure UFW is configured to use nftables backend"
+  command: "grep -E '^BACKEND=nftables' /etc/default/ufw"
+  expected: "BACKEND=nftables"
+
+- id: "3.2.1"
+  description: "Ensure Uncomplicated Firewall (UFW) is enabled"
+  command: "ufw status | grep -E '^Status: active'"
+  expected: "Status: active"
+
+- id: "3.2.2"
+  description: "Ensure default deny firewall policy"
+  command: "ufw status verbose | grep -E 'Default:'"
+  expected: "deny (incoming), deny (outgoing), deny (routed)"
+
+- id: "4.1.1"
+  description: "Ensure auditd is installed and enabled"
+  command: "systemctl is-enabled auditd"
+  expected: "enabled"
+
+- id: "4.1.2"
+  description: "Ensure audit log storage size is configured"
+  command: "grep -E '^max_log_file\s*=' /etc/audit/auditd.conf"
+  expected: "max_log_file = 8"
+
+- id: "5.1.1"
+  description: "Ensure snap is installed and configured"
+  command: "snap version"
+  expected: "snap"
+
+- id: "5.1.2"
+  description: "Ensure snapd is enabled"
+  command: "systemctl is-enabled snapd"
+  expected: "enabled"
+
+- id: "5.2.1"
+  description: "Ensure LXD is installed for container support"
+  command: "snap list lxd"
+  expected: "lxd"
+
+- id: "5.2.2"
+  description: "Ensure LXD is configured securely"
+  command: "grep -E '^config:' /var/snap/lxd/common/config/config.yml"
+  expected: "config:"
+
+- id: "6.1.1"
+  description: "Ensure systemd-oomd is enabled"
+  command: "systemctl is-enabled systemd-oomd"
+  expected: "enabled"
+
+- id: "6.1.2"
+  description: "Ensure systemd-oomd is configured with appropriate memory pressure"
+  command: "grep -E '^ManagedOOMSwap=kill$' /etc/systemd/system.conf"
+  expected: "ManagedOOMSwap=kill"
+
+- id: "6.2.1"
+  description: "Ensure Wayland is the default display server"
+  command: "grep -E '^#WaylandEnable' /etc/gdm3/custom.conf"
+  expected: "#WaylandEnable"
+
+- id: "6.2.2"
+  description: "Ensure X11 forwarding is disabled"
+  command: "grep -E '^X11Forwarding' /etc/ssh/sshd_config"
+  expected: "X11Forwarding no"
+
+- id: "7.1.1"
+  description: "Ensure TPM2 tools are installed"
+  command: "dpkg -s tpm2-tools"
+  expected: "Status: install ok installed"
+
+- id: "7.1.2"
+  description: "Ensure TPM2 is used for disk encryption"
+  command: "grep 'tpm2-device=' /etc/crypttab"
+  expected: "tpm2-device="
+
+- id: "7.2.1"
+  description: "Ensure FIPS mode is enabled if required"
+  command: "grep -E '^GRUB_CMDLINE_LINUX.*fips=1' /etc/default/grub"
+  expected: "fips=1"
+
+- id: "8.1.1"
+  description: "Ensure Wireguard is installed for VPN support"
+  command: "dpkg -s wireguard"
+  expected: "Status: install ok installed"
+
+- id: "8.1.2"
+  description: "Ensure Wireguard kernel module is loaded"
+  command: "lsmod | grep wireguard"
+  expected: "wireguard"
+
+- id: "9.1.1"
+  description: "Ensure Pipewire is installed and configured"
+  command: "dpkg -s pipewire"
+  expected: "Status: install ok installed"
+
+- id: "9.1.2"
+  description: "Ensure Pipewire is running as default audio system"
+  command: "systemctl --user is-active pipewire"
+  expected: "active"
+
+- id: "10.1.1"
+  description: "Ensure zstd compression is used for apt"
+  command: "grep -E '^Acquire::CompressionTypes::Order.*zstd' /etc/apt/apt.conf.d/*"
+  expected: "zstd"
+
+- id: "10.1.2"
+  description: "Ensure needrestart is configured for automatic service restarts"
+  command: "grep -E '^$nrconf{restart}' /etc/needrestart/conf.d/*"
+  expected: "$nrconf{restart} = 'a';"
+
+- id: "11.1.1"
+  description: "Ensure cloud-init is configured securely"
+  command: "grep -E '^disable_root:' /etc/cloud/cloud.cfg"
+  expected: "disable_root: true"
+
+- id: "11.1.2"
+  description: "Ensure cloud-init does not allow password authentication"
+  command: "grep -E '^ssh_pwauth:' /etc/cloud/cloud.cfg"
+  expected: "ssh_pwauth: false"
+
+- id: "12.1.1"
+  description: "Ensure Ubuntu Pro is configured if available"
+  command: "pro status"
+  expected: "active"
+
+- id: "12.1.2"
+  description: "Ensure Livepatch is enabled if Ubuntu Pro is active"
+  command: "pro service livepatch"
+  expected: "enabled"

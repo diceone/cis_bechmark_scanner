@@ -1,0 +1,38 @@
+cis_scanner
+reports/*.html
+*.log
+# Binary
+cis_scanner
+cis_benchmark_scanner
+
+# Generated files
+reports/*.html
+*.log
+cis_scan_report.html
+
+# GoReleaser
+dist/
+
+# Go specific
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# IDE specific
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

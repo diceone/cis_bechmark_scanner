@@ -26,9 +26,12 @@ archives:
       {{- if eq .Arch "amd64" }}x86_64
       {{- else }}{{ .Arch }}{{ end }}
     files:
-      - README.md
-      - LICENSE
-      - cis_checks_*.yaml
+      - src: ./README.md
+        dst: README.md
+      - src: ./LICENSE
+        dst: LICENSE
+      - src: ./cis_checks_*.yaml
+        dst: ./
 
 nfpms:
   - file_name_template: >-

@@ -131,6 +131,18 @@ Currently supported OS configurations:
   - System file permissions
   - Password policies
   - Warning banners
+  - Enterprise Features:
+    - SUSE Manager integration
+    - SUSE Connect registration
+    - Enterprise storage with Btrfs
+    - FIPS 140-2 compliance
+    - Security hardening patterns
+    - Container security (Podman)
+    - Advanced audit configuration
+    - OpenSCAP compliance
+    - Enterprise authentication (SSSD)
+    - Automated patch management
+    - System rollback capabilities
 
 ## Configuration
 

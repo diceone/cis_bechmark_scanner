@@ -174,3 +174,179 @@
   description: "Ensure message of the day is configured properly"
   command: "grep -E -i \"(\\v|\\r|\\m|\\s|$(grep '^ID=' /etc/os-release | cut -d= -f2 | sed -e 's/\"//g'))\" /etc/motd"
   expected: ""
+
+# SLES 15 Enterprise Security
+- id: "13.1.1"
+  description: "Ensure SUSE Manager Client is configured"
+  command: "rpm -q salt-minion"
+  expected: "salt-minion"
+
+- id: "13.1.2"
+  description: "Ensure SUSE Connect is properly configured"
+  command: "SUSEConnect --status"
+  expected: "Registered"
+
+- id: "13.1.3"
+  description: "Verify system is registered with SUSE Customer Center"
+  command: "SUSEConnect -s"
+  expected: "Successfully"
+
+# SUSE Enterprise Storage
+- id: "13.2.1"
+  description: "Ensure storage encryption is enabled"
+  command: "grep -E 'ENCRYPT.*yes' /etc/crypttab"
+  expected: "yes"
+
+- id: "13.2.2"
+  description: "Check for Btrfs filesystem usage"
+  command: "mount | grep btrfs"
+  expected: "btrfs"
+
+- id: "13.2.3"
+  description: "Verify Snapper configuration for root"
+  command: "snapper list-configs"
+  expected: "root"
+
+# SUSE Security Modules
+- id: "13.3.1"
+  description: "Ensure FIPS mode is enabled"
+  command: "grep 'fips=1' /proc/cmdline"
+  expected: "fips=1"
+
+- id: "13.3.2"
+  description: "Check for installed security modules"
+  command: "rpm -q patterns-security-hardening_level_2"
+  expected: "patterns-security-hardening_level_2"
+
+- id: "13.3.3"
+  description: "Verify SELinux tools are installed"
+  command: "rpm -q selinux-tools"
+  expected: "selinux-tools"
+
+# Network Security
+- id: "13.4.1"
+  description: "Ensure Wicked service is running"
+  command: "systemctl is-active wicked"
+  expected: "active"
+
+- id: "13.4.2"
+  description: "Check NetworkManager is disabled"
+  command: "systemctl is-enabled NetworkManager"
+  expected: "disabled"
+
+- id: "13.4.3"
+  description: "Verify firewall zones are configured"
+  command: "firewall-cmd --get-active-zones"
+  expected: "public"
+
+# System Hardening
+- id: "13.5.1"
+  description: "Check system hardening level"
+  command: "grep SECURITY_LEVEL /etc/sysconfig/security"
+  expected: "SECURITY_LEVEL=4"
+
+- id: "13.5.2"
+  description: "Verify password quality requirements"
+  command: "grep pam_pwquality /etc/pam.d/common-password"
+  expected: "pam_pwquality.so"
+
+- id: "13.5.3"
+  description: "Check for YAST security settings"
+  command: "grep Security /etc/permissions.local"
+  expected: "Security"
+
+# Container Security
+- id: "13.6.1"
+  description: "Ensure container runtime is installed"
+  command: "rpm -q podman"
+  expected: "podman"
+
+- id: "13.6.2"
+  description: "Check container network isolation"
+  command: "podman network ls"
+  expected: "podman"
+
+- id: "13.6.3"
+  description: "Verify container security policies"
+  command: "test -f /etc/containers/policy.json && echo 'exists'"
+  expected: "exists"
+
+# Audit and Logging
+- id: "13.7.1"
+  description: "Check rsyslog remote logging"
+  command: "grep '@@' /etc/rsyslog.d/*.conf"
+  expected: "@@"
+
+- id: "13.7.2"
+  description: "Verify audit rules for privileged commands"
+  command: "auditctl -l | grep 'perm=x'"
+  expected: "perm=x"
+
+- id: "13.7.3"
+  description: "Ensure auditd disk space is configured"
+  command: "grep space_left /etc/audit/auditd.conf"
+  expected: "space_left"
+
+# Compliance and Reporting
+- id: "13.8.1"
+  description: "Check OpenSCAP installation"
+  command: "rpm -q openscap-scanner"
+  expected: "openscap-scanner"
+
+- id: "13.8.2"
+  description: "Verify OVAL definitions are present"
+  command: "ls /usr/share/openscap/cpe/*.xml"
+  expected: ".xml"
+
+- id: "13.8.3"
+  description: "Check security reporting tools"
+  command: "rpm -q security-tools"
+  expected: "security-tools"
+
+# Enterprise Authentication
+- id: "13.9.1"
+  description: "Ensure SSSD is configured"
+  command: "systemctl is-active sssd"
+  expected: "active"
+
+- id: "13.9.2"
+  description: "Check LDAP authentication"
+  command: "authselect current | grep sssd"
+  expected: "sssd"
+
+- id: "13.9.3"
+  description: "Verify Kerberos integration"
+  command: "test -f /etc/krb5.conf && echo 'exists'"
+  expected: "exists"
+
+# System Updates
+- id: "13.10.1"
+  description: "Check automatic updates configuration"
+  command: "systemctl is-enabled yast2-online-update-configuration"
+  expected: "enabled"
+
+- id: "13.10.2"
+  description: "Verify patch management system"
+  command: "zypper patches"
+  expected: "patches"
+
+- id: "13.10.3"
+  description: "Check update repositories"
+  command: "zypper lr -u | grep security"
+  expected: "security"
+
+# Backup and Recovery
+- id: "13.11.1"
+  description: "Ensure Snapper is configured for system rollback"
+  command: "snapper list | grep number"
+  expected: "number"
+
+- id: "13.11.2"
+  description: "Check backup tools installation"
+  command: "rpm -q backup-tools"
+  expected: "backup-tools"
+
+- id: "13.11.3"
+  description: "Verify system restore points"
+  command: "btrfs subvolume list / | grep @"
+  expected: "@"

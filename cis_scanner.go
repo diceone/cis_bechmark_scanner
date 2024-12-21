@@ -109,11 +109,11 @@ func listChecks() {
 
 func main() {
 	var (
-		showHelp  bool
-		listFlag  bool
-		scanFlag  bool
+		showHelp   bool
+		listFlag   bool
+		scanFlag   bool
 		reportFlag bool
-		osType    string
+		osType     string
 	)
 
 	flag.BoolVar(&showHelp, "help", false, "Display this help message")

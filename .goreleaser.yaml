@@ -1,0 +1,68 @@
+project_name: cis_benchmark_scanner
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    main: .
+    binary: cis_scanner
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
+
+archives:
+  - format: tar.gz
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else }}{{ .Arch }}{{ end }}
+    files:
+      - README.md
+      - LICENSE
+      - cis_checks_*.yaml
+
+nfpms:
+  - file_name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else }}{{ .Arch }}{{ end }}
+    homepage: https://github.com/diceone/cis_benchmark_scanner
+    description: CIS Benchmark Scanner for multiple operating systems
+    maintainer: DiceOne <info@diceone.de>
+    license: MIT
+    vendor: DiceOne
+    formats:
+      - deb
+      - rpm
+    contents:
+      - src: ./cis_checks_*.yaml
+        dst: /etc/cis_benchmark_scanner/
+      - src: ./README.md
+        dst: /usr/share/doc/cis_benchmark_scanner/README.md
+      - src: ./LICENSE
+        dst: /usr/share/doc/cis_benchmark_scanner/LICENSE
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^ci:'
+      - '^style:'

@@ -457,3 +457,78 @@
   description: "Ensure Postfix inet_interfaces is configured for localhost"
   command: "postconf -n inet_interfaces"
   expected: "inet_interfaces = loopback-only"
+
+- id: "20.1.1"
+  description: "Ensure container runtime is configured securely"
+  command: "grep -E '^no-new-privileges=true' /etc/containers/containers.conf"
+  expected: "no-new-privileges=true"
+
+- id: "20.1.2"
+  description: "Ensure container registries are configured securely"
+  command: "grep -E '^unqualified-search-registries' /etc/containers/registries.conf"
+  expected: "unqualified-search-registries"
+
+- id: "20.1.3"
+  description: "Ensure container network is configured securely"
+  command: "grep -E '^network_config' /etc/containers/containers.conf"
+  expected: "network_config"
+
+- id: "20.2.1"
+  description: "Ensure systemd-resolved DNS-over-TLS is enabled"
+  command: "grep -E '^DNSOverTLS=yes' /etc/systemd/resolved.conf"
+  expected: "DNSOverTLS=yes"
+
+- id: "20.2.2"
+  description: "Ensure systemd-resolved DNSSEC is enabled"
+  command: "grep -E '^DNSSEC=yes' /etc/systemd/resolved.conf"
+  expected: "DNSSEC=yes"
+
+- id: "20.2.3"
+  description: "Ensure systemd-resolved cache is enabled"
+  command: "grep -E '^Cache=yes' /etc/systemd/resolved.conf"
+  expected: "Cache=yes"
+
+- id: "20.3.1"
+  description: "Ensure Wayland security policies are configured"
+  command: "grep -E '^user-session=false' /etc/gdm/custom.conf"
+  expected: "user-session=false"
+
+- id: "20.3.2"
+  description: "Ensure GNOME remote access is disabled"
+  command: "gsettings get org.gnome.desktop.remote-access enabled"
+  expected: "false"
+
+- id: "20.3.3"
+  description: "Ensure GNOME automatic screen lock is enabled"
+  command: "gsettings get org.gnome.desktop.screensaver lock-enabled"
+  expected: "true"
+
+- id: "20.4.1"
+  description: "Ensure Stratis encryption is enabled if used"
+  command: "stratis pool list | grep -E 'encrypted'"
+  expected: "encrypted"
+
+- id: "20.4.2"
+  description: "Ensure VDO compression is configured securely"
+  command: "vdo status | grep -E 'compression: enabled'"
+  expected: "compression: enabled"
+
+- id: "20.4.3"
+  description: "Ensure VDO deduplication is configured securely"
+  command: "vdo status | grep -E 'deduplication: enabled'"
+  expected: "deduplication: enabled"
+
+- id: "20.5.1"
+  description: "Ensure nftables base chains have default deny policy"
+  command: "nft list ruleset | grep -E 'policy drop'"
+  expected: "policy drop"
+
+- id: "20.5.2"
+  description: "Ensure nftables loopback traffic is configured"
+  command: "nft list ruleset | grep -E 'iif \"lo\"'"
+  expected: "iif \"lo\" accept"
+
+- id: "20.5.3"
+  description: "Ensure nftables outbound and established connections are configured"
+  command: "nft list ruleset | grep -E 'ct state established,related'"
+  expected: "ct state established,related accept"

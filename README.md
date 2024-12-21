@@ -4,7 +4,7 @@ A powerful command-line tool for scanning systems against CIS (Center for Intern
 
 ## Features
 
-- Multi-OS support (RHEL 8/9, Ubuntu 22.04/24.04)
+- Multi-OS support (RHEL 8/9, Ubuntu 22.04/24.04, SLES 15)
 - Comprehensive security checks based on CIS benchmarks
 - Detailed HTML report generation
 - Easy-to-use command-line interface
@@ -52,7 +52,7 @@ cis_scanner [options]
 - `-scan`: Run security checks
 - `-report`: Generate HTML report
 - `-list`: List available checks
-- `-os`: Specify target OS (rhel8, rhel9, ubuntu2204, ubuntu2404)
+- `-os`: Specify target OS (rhel8, rhel9, ubuntu2204, ubuntu2404, sles15)
 - `-help`: Display help information
 
 ### Examples
@@ -119,6 +119,19 @@ Currently supported OS configurations:
   - DNS-over-TLS support
   - Automated service management
 
+- SLES 15 (`-os sles15`)
+  - Complete CIS Level 1 Server benchmark checks
+  - AppArmor security profiles
+  - Wicked Network Manager configuration
+  - YAST2 security settings
+  - Snapper system snapshots
+  - Firewalld integration
+  - RPM package verification
+  - Time synchronization with chrony
+  - System file permissions
+  - Password policies
+  - Warning banners
+
 ## Configuration
 
 Security checks are defined in OS-specific YAML files:
@@ -126,6 +139,7 @@ Security checks are defined in OS-specific YAML files:
 - `cis_checks_rhel9.yaml`
 - `cis_checks_ubuntu2204.yaml`
 - `cis_checks_ubuntu2404.yaml`
+- `cis_checks_sles15.yaml`
 
 Each check has:
 - Unique ID

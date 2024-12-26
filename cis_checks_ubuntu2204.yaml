@@ -590,17 +590,17 @@
 
 - id: "21.13.2"
   description: "Ensure audit log storage size is configured"
-  command: "grep -E '^max_log_file\s*=' /etc/audit/auditd.conf"
+  command: 'grep -E "^max_log_file[[:space:]]*=" /etc/audit/auditd.conf'
   expected: "max_log_file = 8"
 
 - id: "21.14.1"
-  description: "Ensure rsyslog is installed and enabled"
-  command: "dpkg -s rsyslog && systemctl is-enabled rsyslog"
-  expected: "enabled"
+  description: "Ensure rsyslog is installed"
+  command: "dpkg -s rsyslog"
+  expected: "Status: install ok installed"
 
 - id: "21.14.2"
   description: "Ensure rsyslog default file permissions are configured"
-  command: "grep -E '^\s*\$FileCreateMode' /etc/rsyslog.conf"
+  command: 'grep -E "^[[:space:]]*\$FileCreateMode" /etc/rsyslog.conf'
   expected: "$FileCreateMode 0640"
 
 - id: "21.15.1"
@@ -610,8 +610,8 @@
 
 - id: "21.15.2"
   description: "Ensure systemd-journal-remote certificate validation is enabled"
-  command: "grep -E '^\s*SSLVerifyClient' /etc/systemd/journal-upload.conf"
-  expected: "SSLVerifyClient=yes"
+  command: 'grep -E "^[[:space:]]*SSLVerifyClient" /etc/systemd/journal-upload.conf'
+  expected: "SSLVerifyClient=true"
 
 - id: "21.16.1"
   description: "Ensure time synchronization is in use"

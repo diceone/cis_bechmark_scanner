@@ -400,7 +400,7 @@
 
 - id: "19.9.1"
   description: "Ensure GNOME Display Manager is configured"
-  command: "grep -Eis '^\s*Enable\s*=\s*true' /etc/gdm3/custom.conf"
+  command: 'grep -Eis "^[[:space:]]*Enable[[:space:]]*=[[:space:]]*true" /etc/gdm3/custom.conf'
   expected: "Enable=true"
 
 - id: "19.10.1"
@@ -425,8 +425,8 @@
 
 - id: "20.1.1"
   description: "Ensure system-wide crypto policy is not legacy"
-  command: "update-crypto-policies --show"
-  expected: "DEFAULT"
+  command: 'grep -E "^[[:space:]]*CRYPTO_POLICY=" /etc/crypto-policies/config'
+  expected: "CRYPTO_POLICY=DEFAULT"
 
 - id: "20.1.2"
   description: "Ensure no legacy SSL/TLS versions are used"
@@ -444,8 +444,8 @@
   expected: "sha512"
 
 - id: "21.1.1"
-  description: "Ensure system-wide core dumps are restricted"
-  command: "grep -E '^\\s*\\*\\s+hard\\s+core' /etc/security/limits.conf /etc/security/limits.d/*"
+  description: "Ensure core dumps are restricted"
+  command: 'grep -E "^[[:space:]]*\*[[:space:]]+hard[[:space:]]+core" /etc/security/limits.conf /etc/security/limits.d/*'
   expected: "* hard core 0"
 
 - id: "21.1.2"
@@ -497,6 +497,16 @@
   description: "Ensure SSH LogLevel is appropriate"
   command: "grep -Ei '^LogLevel' /etc/ssh/sshd_config"
   expected: "LogLevel VERBOSE"
+
+- id: "21.4.4"
+  description: "Ensure permissions on SSH private host key files are configured"
+  command: 'find /etc/ssh -xdev -type f -name "ssh_host_*_key" -exec stat -L -c "%a %u %g" {} \;'
+  expected: "600 0 0"
+
+- id: "21.4.5"
+  description: "Ensure permissions on SSH public host key files are configured"
+  command: 'find /etc/ssh -xdev -type f -name "ssh_host_*_key.pub" -exec stat -L -c "%a %u %g" {} \;'
+  expected: "644 0 0"
 
 - id: "21.5.1"
   description: "Ensure cron daemon is enabled and running"

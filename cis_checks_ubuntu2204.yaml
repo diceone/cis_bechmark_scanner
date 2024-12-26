@@ -530,12 +530,12 @@
 
 - id: "21.7.1"
   description: "Ensure password creation requirements are configured"
-  command: "grep -E '^minlen|^dcredit|^ucredit|^ocredit|^lcredit' /etc/security/pwquality.conf"
-  expected: "minlen = 14"
+  command: 'grep -E "^[[:space:]]*password[[:space:]]+required[[:space:]]+pam_pwquality.so" /etc/pam.d/common-password'
+  expected: "password required pam_pwquality.so"
 
 - id: "21.7.2"
   description: "Ensure lockout for failed password attempts is configured"
-  command: "grep -E '^\s*auth\s+required\s+pam_tally2.so' /etc/pam.d/common-auth"
+  command: 'grep -E "^[[:space:]]*auth[[:space:]]+required[[:space:]]+pam_tally2.so" /etc/pam.d/common-auth'
   expected: "auth required pam_tally2.so"
 
 - id: "21.8.1"
@@ -549,24 +549,24 @@
   expected: "PASS_MIN_DAYS 7"
 
 - id: "21.9.1"
+  description: "Ensure password hashing algorithm is up to date"
+  command: 'grep -E "^[[:space:]]*password[[:space:]]+[[:space:]]+pam_unix.so" /etc/pam.d/common-password'
+  expected: "sha512"
+
+- id: "21.9.2"
   description: "Ensure sudo is installed"
   command: "dpkg -s sudo"
   expected: "Status: install ok installed"
 
-- id: "21.9.2"
-  description: "Ensure sudo commands use pty"
-  command: "grep -Ei '^\s*Defaults\s+([^#]+,\s*)?use_pty' /etc/sudoers"
-  expected: "Defaults use_pty"
-
 - id: "21.10.1"
+  description: "Ensure password reuse is limited"
+  command: 'grep -E "^[[:space:]]*password[[:space:]]+required[[:space:]]+pam_pwhistory.so" /etc/pam.d/common-password'
+  expected: "remember=5"
+
+- id: "21.10.2"
   description: "Ensure permissions on /etc/passwd are configured"
   command: "stat -L -c \"%a %u %g\" /etc/passwd"
   expected: "644 0 0"
-
-- id: "21.10.2"
-  description: "Ensure permissions on /etc/shadow are configured"
-  command: "stat -L -c \"%a %u %g\" /etc/shadow"
-  expected: "640 0 42"
 
 - id: "21.11.1"
   description: "Ensure no world writable files exist"

@@ -125,7 +125,7 @@
 
 - id: "8.1.1"
   description: "Ensure message of the day is configured properly"
-  command: "grep -E -i '(\\\\v|\\\\r|\\\\m|\\\\s|$(grep \"\\w\" /etc/issue))' /etc/motd"
+  command: "grep -E -i '(\\v|\\r|\\m|\\s|$(grep \"\\w\" /etc/issue))' /etc/motd"
   expected: ""
 
 - id: "9.1.1"
@@ -420,7 +420,7 @@
 
 - id: "19.12.1"
   description: "Ensure message of the day is configured properly"
-  command: "grep -E -i '(\\v|\\r|\\m|\\s|$(grep '\''\\v'\'' /etc/motd))' /etc/motd"
+  command: "grep -E -i '(\\v|\\r|\\m|\\s|$(grep '\\v' /etc/motd))' /etc/motd"
   expected: ""
 
 - id: "20.1.1"
@@ -615,7 +615,7 @@
 
 - id: "21.17.1"
   description: "Ensure mail transfer agent is configured for local-only mode"
-  command: "ss -lntu | grep -E ':25\\s' | grep -E -v '\\s127\\.0\\.0\\.1:25\\s'"
+  command: "ss -lntu | grep -E ':25\s' | grep -E -v '\s127\.0\.0\.1:25\s'"
   expected: ""
 
 - id: "21.18.1"
@@ -701,7 +701,7 @@
 - id: "22.4.2"
   description: "Ensure loopback traffic is configured"
   command: "ufw status verbose | grep -E 'Anywhere on lo'"
-  expected: "ALLOW IN\s+Anywhere on lo"
+  expected: "ALLOW IN Anywhere on lo"
 
 - id: "22.4.3"
   description: "Ensure outbound connections are configured"

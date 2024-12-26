@@ -120,7 +120,7 @@ func main() {
 	flag.BoolVar(&listFlag, "list", false, "List all available checks")
 	flag.BoolVar(&scanFlag, "scan", false, "Run all checks")
 	flag.BoolVar(&reportFlag, "report", false, "Generate an HTML report after scanning")
-	flag.StringVar(&osType, "os", "rhel8", "Target OS for benchmark (e.g., rhel8, ubuntu20)")
+	flag.StringVar(&osType, "os", "rhel8", "Target OS for benchmark (e.g., rhel8, rhel9, sles15, ubuntu2204, ubuntu2404)")
 	flag.Parse()
 
 	if showHelp {
@@ -132,10 +132,10 @@ func main() {
 		fmt.Println("  -list      List all available checks")
 		fmt.Println("  -scan      Run all checks")
 		fmt.Println("  -report    Generate an HTML report after scanning")
-		fmt.Println("  -os        Target OS for benchmark (e.g., rhel8, ubuntu20)")
+		fmt.Println("  -os        Target OS for benchmark (e.g., rhel8, rhel9, sles15, ubuntu2204, ubuntu2404)")
 		fmt.Println("\nExamples:")
 		fmt.Println("  cis_scanner -scan -os rhel8")
-		fmt.Println("  cis_scanner -list -os ubuntu20")
+		fmt.Println("  cis_scanner -list -os ubuntu2204")
 		fmt.Println("  cis_scanner -scan -report -os rhel8")
 		return
 	}

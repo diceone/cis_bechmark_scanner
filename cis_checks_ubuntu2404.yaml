@@ -95,18 +95,28 @@
 
 - id: "4.1.2"
   description: "Ensure audit log storage size is configured"
-  command: "grep -E '^max_log_file\s*=' /etc/audit/auditd.conf"
+  command: 'grep -E "^max_log_file[[:space:]]*=" /etc/audit/auditd.conf'
   expected: "max_log_file = 8"
 
+- id: "4.2.1"
+  description: "Ensure rsyslog default file permissions are configured"
+  command: 'grep -E "^[[:space:]]*\$FileCreateMode" /etc/rsyslog.conf'
+  expected: "$FileCreateMode 0640"
+
+- id: "4.3.1"
+  description: "Ensure systemd-journal-remote is configured"
+  command: 'grep -E "^[[:space:]]*SSLVerifyClient" /etc/systemd/journal-upload.conf'
+  expected: "SSLVerifyClient=true"
+
 - id: "5.1.1"
+  description: "Ensure password creation requirements are configured"
+  command: 'grep -E "^[[:space:]]*password[[:space:]]+required[[:space:]]+pam_pwquality.so" /etc/pam.d/common-password'
+  expected: "password required pam_pwquality.so"
+
+- id: "5.1.2"
   description: "Ensure snap is installed and configured"
   command: "snap version"
   expected: "snap"
-
-- id: "5.1.2"
-  description: "Ensure snapd is enabled"
-  command: "systemctl is-enabled snapd"
-  expected: "enabled"
 
 - id: "5.2.1"
   description: "Ensure LXD is installed for container support"

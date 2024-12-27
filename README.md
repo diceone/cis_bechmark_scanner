@@ -41,6 +41,8 @@ A comprehensive security compliance scanner for Linux systems, implementing CIS 
 go install github.com/diceone/cis_benchmark_scanner@latest
 ```
 
+Or download the latest release from [GitHub Releases](https://github.com/diceone/cis_benchmark_scanner/releases).
+
 ## Usage
 
 ```bash

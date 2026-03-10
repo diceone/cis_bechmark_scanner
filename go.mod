@@ -1,5 +1,5 @@
-module github.com/mvogeler/cis_benchmark_scanner
+module github.com/diceone/cis_benchmark_scanner
 
-go 1.20
+go 1.21
 
 require gopkg.in/yaml.v3 v3.0.1

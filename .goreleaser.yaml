@@ -13,10 +13,10 @@ builds:
     goarch:
       - amd64
       - arm64
-    main: .
+    main: ./cmd/cis_scanner
     binary: cis_scanner
     ldflags:
-      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
+      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.buildDate={{.Date}}
 
 archives:
   - format: tar.gz

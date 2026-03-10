@@ -193,12 +193,12 @@
   command: "modprobe -n -v sctp"
   expected: "install /bin/true"
 
-- id: "3.3.1"
+- id: "3.6.1"
   description: "Ensure IPv6 router advertisements are not accepted"
   command: "sysctl net.ipv6.conf.all.accept_ra"
   expected: "net.ipv6.conf.all.accept_ra = 0"
 
-- id: "3.3.2"
+- id: "3.6.2"
   description: "Ensure IPv6 redirects are not accepted"
   command: "sysctl net.ipv6.conf.all.accept_redirects"
   expected: "net.ipv6.conf.all.accept_redirects = 0"
@@ -398,12 +398,12 @@
   command: "stat -L -c '%a %u %g' /etc/shadow-"
   expected: "000 0 0"
 
-- id: "6.1.3"
+- id: "6.1.4"
   description: "Ensure permissions on /etc/shadow are configured"
   command: "stat -L -c '%a %u %g' /etc/shadow"
   expected: "000 0 0"
 
-- id: "6.1.3"
+- id: "6.1.5"
   description: "Ensure permissions on /etc/group- are configured"
   command: "stat -L -c '%a %u %g' /etc/group-"
   expected: "600 0 0"
@@ -453,7 +453,7 @@
   command: "awk -F: '($3 == 0) { print $1 }' /etc/passwd"
   expected: "root"
 
-- id: "6.2.3"
+- id: "6.2.3.1"
   description: "Ensure root PATH Integrity"
   command: "if echo $PATH | grep -q '::'; then echo 'Empty Directory in PATH (::)'; fi"
   expected: ""

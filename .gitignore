@@ -1,9 +1,6 @@
-cis_scanner
-reports/*.html
-*.log
 # Binary
-cis_scanner
-cis_benchmark_scanner
+/cis_scanner
+/cis_benchmark_scanner
 
 # Generated files
 reports/*.html
